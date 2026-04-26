@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>切手代計算</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      max-width: 400px;
+      margin: auto;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+      align-items: center;
+    }
+    button {
+      width: 30px;
+      height: 30px;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h2>📮 切手代計算</h2>
+
+<div class="row">
+  紙（A4）
+  <div>
+    <button onclick="change('paper', -1)">-</button>
+    <span id="paper">0</span>
+    <button onclick="change('paper', 1)">+</button>
+  </div>
+</div>
+
+<div class="row">
+  写真
+  <div>
+    <button onclick="change('photo', -1)">-</button>
+    <span id="photo">0</span>
+    <button onclick="change('photo', 1)">+</button>
+  </div>
+</div>
+
+<div class="row">
+  封筒
+  <select id="envelope" onchange="calc()">
+    <option value="10">長形3号（10g）</option>
+    <option value="15">角形2号（15g）</option>
+  </select>
+</div>
+
+<div class="result">
+  合計重量：<span id="weight">0</span> g<br>
+  切手代：<span id="price">0</span> 円
+</div>
+
+<script>
+let data = {
+  paper: 0,
+  photo: 0
+};
+
+function change(type, delta) {
+  data[type] = Math.max(0, data[type] + delta);
+  document.getElementById(type).textContent = data[type];
+  calc();
+}
+
+function calc() {
+  let weight =
+    data.paper * 5 +
+    data.photo * 3 +
+    parseInt(document.getElementById("envelope").value);
+
+  document.getElementById("weight").textContent = weight;
+
+  let price = 0;
+
+  if (weight <= 50) price = 110;
+  else if (weight <= 100) price = 180;
+  else price = 270;
+
+  document.getElementById("price").textContent = price;
+}
+
+// 初期計算
+calc();
+</script>
+
+</body>
+</html>
