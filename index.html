@@ -1,71 +1,207 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>切手代計算</title>
-  <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      max-width: 400px;
-      margin: auto;
-    }
-    .row {
-      display: flex;
-      justify-content: space-between;
-      margin: 10px 0;
-      align-items: center;
-    }
-    button {
-      width: 30px;
-      height: 30px;
-    }
-    .result {
-      margin-top: 20px;
-      font-size: 20px;
-      font-weight: bold;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>切手代計算</title>
+
+<style>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f5f7fa;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+h3 {
+  margin-top: 0;
+  font-size: 16px;
+  color: #666;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+}
+
+button {
+  width: 44px;
+  height: 44px;
+  font-size: 20px;
+  border-radius: 10px;
+  border: none;
+  background-color: #2d89ef;
+  color: white;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+.count {
+  font-size: 18px;
+  margin: 0 12px;
+  min-width: 20px;
+  text-align: center;
+}
+
+select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.result {
+  text-align: center;
+}
+
+.weight {
+  font-size: 16px;
+  color: #666;
+}
+
+.price {
+  font-size: 28px;
+  font-weight: bold;
+  color: #ff6b00;
+}
+
+.toggle {
+  text-align: center;
+  margin: 10px 0;
+  color: #2d89ef;
+  cursor: pointer;
+}
+</style>
 </head>
+
 <body>
+
+<div class="container">
 
 <h2>📮 切手代計算</h2>
 
-<div class="row">
-  紙（A4）
-  <div>
-    <button onclick="change('paper', -1)">-</button>
-    <span id="paper">0</span>
-    <button onclick="change('paper', 1)">+</button>
+<!-- よく使う -->
+<div class="card">
+  <h3>よく使う</h3>
+
+  <div class="row">
+    A4（普通紙）
+    <div class="controls">
+      <button onclick="change('a4', -1)">−</button>
+      <div class="count" id="a4">0</div>
+      <button onclick="change('a4', 1)">＋</button>
+    </div>
+  </div>
+
+  <div class="row">
+    クリアファイル
+    <div class="controls">
+      <button onclick="change('file', -1)">−</button>
+      <div class="count" id="file">0</div>
+      <button onclick="change('file', 1)">＋</button>
+    </div>
+  </div>
+
+  <div class="row">
+    写真
+    <div class="controls">
+      <button onclick="change('photo', -1)">−</button>
+      <div class="count" id="photo">0</div>
+      <button onclick="change('photo', 1)">＋</button>
+    </div>
   </div>
 </div>
 
-<div class="row">
-  写真
-  <div>
-    <button onclick="change('photo', -1)">-</button>
-    <span id="photo">0</span>
-    <button onclick="change('photo', 1)">+</button>
+<!-- 詳細トグル -->
+<div class="toggle" onclick="toggleDetail()">▼ 詳細を表示</div>
+
+<div id="detail" style="display:none;">
+
+<div class="card">
+  <h3>紙（詳細）</h3>
+
+  <div class="row">
+    A4（厚紙）
+    <div class="controls">
+      <button onclick="change('a4thick', -1)">−</button>
+      <div class="count" id="a4thick">0</div>
+      <button onclick="change('a4thick', 1)">＋</button>
+    </div>
   </div>
+
+  <div class="row">
+    A3（普通紙）
+    <div class="controls">
+      <button onclick="change('a3', -1)">−</button>
+      <div class="count" id="a3">0</div>
+      <button onclick="change('a3', 1)">＋</button>
+    </div>
+  </div>
+
+  <div class="row">
+    A3（厚紙）
+    <div class="controls">
+      <button onclick="change('a3thick', -1)">−</button>
+      <div class="count" id="a3thick">0</div>
+      <button onclick="change('a3thick', 1)">＋</button>
+    </div>
+  </div>
+
+</div>
 </div>
 
-<div class="row">
-  封筒
+<!-- 封筒 -->
+<div class="card">
+  <h3>封筒</h3>
   <select id="envelope" onchange="calc()">
-    <option value="10">長形3号（10g）</option>
-    <option value="15">角形2号（15g）</option>
+    <option value="10">長形3号（A4三つ折り）</option>
+    <option value="15">角形2号（A4そのまま）</option>
   </select>
 </div>
 
-<div class="result">
-  合計重量：<span id="weight">0</span> g<br>
-  切手代：<span id="price">0</span> 円
+<!-- 結果 -->
+<div class="card result">
+  <div class="weight">合計重量：<span id="weight">0</span> g</div>
+  <div class="price"><span id="price">0</span> 円</div>
+</div>
+
 </div>
 
 <script>
 let data = {
-  paper: 0,
-  photo: 0
+  a4: 0,
+  a4thick: 0,
+  a3: 0,
+  a3thick: 0,
+  photo: 0,
+  file: 0
 };
 
 function change(type, delta) {
@@ -74,10 +210,19 @@ function change(type, delta) {
   calc();
 }
 
+function toggleDetail() {
+  let el = document.getElementById("detail");
+  el.style.display = el.style.display === "none" ? "block" : "none";
+}
+
 function calc() {
   let weight =
-    data.paper * 5 +
+    data.a4 * 5 +
+    data.a4thick * 8 +
+    data.a3 * 10 +
+    data.a3thick * 15 +
     data.photo * 3 +
+    data.file * 20 +
     parseInt(document.getElementById("envelope").value);
 
   document.getElementById("weight").textContent = weight;
@@ -91,7 +236,6 @@ function calc() {
   document.getElementById("price").textContent = price;
 }
 
-// 初期計算
 calc();
 </script>
 
